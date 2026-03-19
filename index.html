@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit & Task Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Syne (display) + DM Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Firebase Modular SDK (v10) -->
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+
+  <!-- ─── NOISE OVERLAY ─── -->
+  <div class="noise"></div>
+
+  <!-- ─── HEADER ─── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">FLUX</span>
+      </div>
+      <div class="header-right">
+        <div class="date-badge" id="todayDate"></div>
+        <div class="streak-badge" id="streakBadge" title="Current streak">
+          <span class="streak-fire">🔥</span>
+          <span id="streakCount">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── NAV TABS ─── -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="daily">Daily</button>
+    <button class="tab-btn" data-tab="monthly">Monthly</button>
+    <button class="tab-btn" data-tab="yearly">Yearly</button>
+  </nav>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="main">
+
+    <!-- ══════════ DAILY TAB ══════════ -->
+    <section class="tab-panel active" id="tab-daily">
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card glass">
+          <div class="stat-label">Added</div>
+          <div class="stat-value" id="stat-added">0</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="stat-label">Done</div>
+          <div class="stat-value accent" id="stat-done">0</div>
+        </div>
+        <div class="stat-card glass ring-card">
+          <canvas id="ringChart" width="80" height="80"></canvas>
+          <div class="ring-label" id="ringPct">0%</div>
+        </div>
+      </div>
+
+      <!-- Task Groups (grouped by date) -->
+      <div class="section-title">
+        <span>Tasks</span>
+        <span class="filter-pills">
+          <button class="pill active" data-filter="all">All</button>
+          <button class="pill" data-filter="pending">Pending</button>
+          <button class="pill" data-filter="done">Done</button>
+        </span>
+      </div>
+
+      <div id="taskGroups" class="task-groups">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">✦</div>
+          <p>No tasks yet. Hit <strong>+</strong> to begin.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════ MONTHLY TAB ══════════ -->
+    <section class="tab-panel" id="tab-monthly">
+      <div class="stats-row">
+        <div class="stat-card glass wide">
+          <div class="stat-label">Total Completed This Month</div>
+          <div class="stat-value accent" id="monthlyTotal">0</div>
+        </div>
+        <div class="stat-card glass wide">
+          <div class="stat-label">Active Days</div>
+          <div class="stat-value" id="monthlyActiveDays">0</div>
+        </div>
+      </div>
+      <div class="chart-card glass">
+        <div class="chart-header">Consistency — Last 30 Days</div>
+        <div class="chart-wrap">
+          <canvas id="consistencyChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ YEARLY TAB ══════════ -->
+    <section class="tab-panel" id="tab-yearly">
+      <div class="stats-row">
+        <div class="stat-card glass wide">
+          <div class="stat-label">Total Completed This Year</div>
+          <div class="stat-value accent" id="yearlyTotal">0</div>
+        </div>
+        <div class="stat-card glass wide">
+          <div class="stat-label">Best Month</div>
+          <div class="stat-value" id="yearlyBest">—</div>
+        </div>
+      </div>
+      <div class="chart-card glass">
+        <div class="chart-header">Monthly Performance</div>
+        <div class="chart-wrap">
+          <canvas id="monthlyBarChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FAB ─── -->
+  <button class="fab" id="fabBtn" aria-label="Add task">
+    <span class="fab-icon">+</span>
+  </button>
+
+  <!-- ─── ADD TASK MODAL ─── -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal glass" id="addModal">
+      <div class="modal-header">
+        <h2>New Task</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <input
+          type="text"
+          id="taskInput"
+          class="task-input"
+          placeholder="What do you want to accomplish?"
+          maxlength="120"
+          autocomplete="off"
+        />
+        <div class="input-hint" id="inputHint">Press Enter or tap Add</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="btnCancel">Cancel</button>
+        <button class="btn-add" id="btnAdd">Add Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOAST ─── -->
+  <div class="toast" id="toast"></div>
+
+</body>
+</html>
